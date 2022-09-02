@@ -103,7 +103,7 @@ def main():
     store=Inventory()
 
     # store=storeInventory("inventory.txt")
-    store=storeInventory("inventory1.txt")
+    store=storeInventory("inventory.txt")
     cart=Cart()
     member=False
     loggin=False

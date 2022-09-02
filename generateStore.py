@@ -47,7 +47,7 @@ def main():
             store[i]+=", $"+str(round(price+(price*0.05),2))
             store[i]+=(", Taxable")
         
-    fout=open("inventory1.txt", 'wt')
+    fout=open("inventory.txt", 'wt')
     for line in store:
         fout.write(line+"\n")
     # fout.write('\n')

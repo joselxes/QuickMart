@@ -1,0 +1,15 @@
+September 1,2022
+TRANSACTION:000003
+ITEM		QUANTITY		UNIT PRICE	TOTAL
+Red-Bull    		2		$4.0		8.6
+Milk        		2		$3.5		7.5
+Flour       		1		$2.75		3.1
+************************************************
+TOTAL NUMBER OF ITEMS SOLD:5
+SUB-TOTAL: $17.75
+TAX(6.5%): $0.52
+TOTAL:$18.27
+CASH:$20.0
+CHANGE:$1.73
+************************************************
+YOU SAVED:$0!

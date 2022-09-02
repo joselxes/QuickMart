@@ -35,22 +35,24 @@ class Inventory:
             string=string+self.inventory[key].__str__()+"\n"
         return string  
     def listProducts(self):
-        string=""
+        string=[]
         count=1
         for key in self.inventory: 
-            string+=str(count)+".- "+key+"\n"
+            string.append(key)
             count+=1
         return string  
     def addProduct(self,product):
         self.inventory[product.prodName]=product
 
+    def increaseTransactions(self):
+        self.transactions+=1
+        
     def upDate(self,Name,quantity):
         try:
-            self.inventory[Name].quantity-=quantity
-            if self.inventory[Name].quantity<=0:
-                print("nooo",self.inventory[Name].quantity-quantity)
-                # self.inventory.pop(Name)
-# aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+            if self.inventory[Name].quantity<quantity:
+                self.inventory[Name].quantity=0
+            else:
+                self.inventory[Name].quantity-=quantity
             return True
         except:
             return False
@@ -58,31 +60,55 @@ class Inventory:
 class Cart():
     def __init__(self):
         self.items={}
+        self.subTotal=0
+        self.tax=000
+        self.total=0
+        self.change=0
+        self.saved=0
         self.receipt=[]
+
     def __str__(self):  
         string=""
+        count=1
+        if len(self.items)==0:
+            return "\n---The cart is empty---\n"
         for key in self.items: 
-            string+=key+": "+str(self.items[key])+"\n"
+            string+=str(count)+".- "+key+": "+str(self.items[key])+"\n"
+            count+=1
+        return string  
+    def listItems(self):  
+        string=[]
+        for key in self.items: 
+            string.append(key)
         return string  
     def addItem(self,product,quantity):
-        self.items[product]=quantity
+        if product in self.items:
+            self.items[product]+=quantity
+        else:
+            self.items[product]=quantity
+
     def removeItem(self,product,quantity):
-        self.items.pop(product)
-    def popItem(self,product,quantity):
-        self.items.pop(product)
-    def checkOut(self,store,member,cash):
+        self.items[product]-=quantity
+        if self.items[product]<=0:
+            self.items.pop(product)
+
+    def empty(self):
+        if len(self.items)>=1:
+            return False
+        return True
+    def checkOut(self,store,member,cash,onlyView):
         priceNoMember=0
         priceMember=0
-        tax=0
-        saves=0
         totalItems=0
         tempMemberValue=0
         tempNoMemberValue=0
         today=datetime.today()
         monthName=calendar.month_name[today.month]
         date=(monthName+" "+str(today.day)+","+str(today.year)+"\n" )
-        TRANSACTION=str(3)
-        text=[date,"TRANSACTION:"+TRANSACTION.zfill(6)+"\n","ITEM\t\tQUANTITY\t\tUNIT PRICE\tTOTAL\n"]
+        if not(onlyView):
+            store.increaseTransactions()
+        receiptName= "transaction_"+str(store.transactions).zfill(6)+"_" + str(today.month) + str(today.day) + str(today.year)  +"_"+".txt"
+        receiptText=[date,"TRANSACTION:"+str(store.transactions).zfill(6),"ITEM\t\tQUANTITY\t\tUNIT PRICE\tTOTAL\n"]
         nextItem=""
         if member:
             for i in self.items:
@@ -92,13 +118,13 @@ class Cart():
                 tempNoMemberValue=store.inventory[i].priceNoMember*self.items[i]
                 priceMember+= tempMemberValue  
                 priceNoMember+= tempNoMemberValue
-                tax+=round((store.inventory[i].taxStatus*0.065)*(tempMemberValue),2)
+                self.tax+=round((store.inventory[i].taxStatus*0.065)*(tempMemberValue),2)
                 while len(nextItem)<12:
                     nextItem+=" "
-                text.append(nextItem+"\t\t"+str(self.items[i])+"\t\t"+"$"+str(store.inventory[i].priceMember)+"\t\t"+str(tempNoMemberValue)+"\n")
+                receiptText.append(nextItem+"\t\t"+str(self.items[i])+"\t\t"+"$"+str(store.inventory[i].priceMember)+"\t\t"+str(tempNoMemberValue)+"\n")
                 # print(store.inventory[i].taxStatus, "taxXSTatus")
-
-                store.upDate(i,self.items[i])
+                if not(onlyView):
+                    store.upDate(i,self.items[i])
 
         else:
             for i in self.items:
@@ -106,28 +132,33 @@ class Cart():
                 totalItems+=self.items[i]
                 tempNoMemberValue=store.inventory[i].priceNoMember*self.items[i]
                 priceNoMember+= tempNoMemberValue
-                tax+=round((store.inventory[i].taxStatus*0.065)*(tempMemberValue),2)
-                nextString=i+str(self.items[i])+"$"+str(store.inventory[i].priceMember)+str(tempNoMemberValue)
+                self.tax+=round((store.inventory[i].taxStatus*0.065)*(tempNoMemberValue),2)
+                nextString=i+str(self.items[i])+"$"+str(store.inventory[i].priceNoMember)+str(tempNoMemberValue)
                 while len(nextItem)<12:
                     nextItem+=" "
-                text.append(nextItem+"\t\t"+str(self.items[i])+"\t\t"+"$"+str(store.inventory[i].priceMember)+"\t\t"+str(tempNoMemberValue)+"\n")
+                receiptText.append(nextItem+"\t\t"+str(self.items[i])+"\t\t"+"$"+str(store.inventory[i].priceMember)+"\t\t"+str(tempNoMemberValue)+"\n")
+                if not(onlyView):
+                    store.upDate(i,self.items[i])
             priceMember=priceNoMember
-        text.append("************************************************\n")
-        text.append("TOTAL NUMBER OF ITEMS SOLD:"+str(totalItems)+  "\n")
-        text.append("SUB-TOTAL: $"+     str(priceMember)+           "\n")
-        text.append("TAX(6.5%): $"+     str(tax)+                   "\n")
-        text.append("TOTAL:$"+          str(tax+priceMember)+       "\n")
-        text.append("CASH:$"+           str(cash)+                  "\n")
-        text.append("CHANGE:$"+         str(round(cash-(tax+priceMember),2))+         "\n")
-        text.append("************************************************\n")
-        text.append("YOU SAVED:$"+      str(round(saves,2))+       "!\n")
-        saves=priceNoMember-priceMember
-        return text
-    def printReceipt(self,texto):
+        self.subTotal=priceMember
+        self.saved=priceNoMember-priceMember
+        self.total=round(self.tax+priceMember,2)
+        receiptText.append("************************************************")
+        receiptText.append("TOTAL NUMBER OF ITEMS SOLD:"+str(totalItems) )
+        receiptText.append("SUB-TOTAL: $"+     str(self.subTotal))
+        receiptText.append("TAX(6.5%): $"+     str(self.tax))
+        receiptText.append("TOTAL:$"+          str(self.total))
+        receiptText.append("CASH:$"+           str(cash))
+        receiptText.append("CHANGE:$"+         str(round(cash-(self.total),2)))
+        receiptText.append("************************************************")
+        receiptText.append("YOU SAVED:$"+      str(round(self.saved,3))+ "!")
+
+        return receiptName,receiptText
+    def printReceipt(self,receiptName,receiptText):
         """ Saves the created input in a txt file"""
 
-        fout=open("receipt.txt", 'wt')
-        for line in texto:
-            fout.write(line )
+        fout=open(receiptName, 'wt')
+        for line in receiptText:
+            fout.write(line+"\n")
         # fout.write('\n')
         fout.close 

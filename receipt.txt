@@ -1,5 +1,5 @@
-September 1,2022
-TRANSACTION:000003
+September 2,2022
+TRANSACTION:000001
 ITEM		QUANTITY		UNIT PRICE	TOTAL
 Red-Bull    		2		$4.0		8.6
 Milk        		2		$3.5		7.5

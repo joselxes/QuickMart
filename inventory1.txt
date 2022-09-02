@@ -1,0 +1,6 @@
+makeup: 10, $8.42, $8.84, Taxable
+Gelatins: 11, $35.39, $37.16, Tax-Exempt
+Honey: 9, $76.99, $80.84, Tax-Exempt
+Crackers: 6, $38.42, $40.34, Tax-Exempt
+Coffe: 14, $63.54, $66.72, Tax-Exempt
+Cocoa: 28, $9.98, $10.48, Tax-Exempt

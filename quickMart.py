@@ -58,22 +58,32 @@ def deleteFromCart(cart):
 
     return True
 
-def storeInventory():
+def storeInventory(file):
     # These function will read each line and store in the market inventory
     data=Inventory()
-    try:
-        text=open("inventory.txt","r")
-        a=0
-        for line in text:
-            a+=1
-            linea=line.split()
-            newProd=Product(linea)
-            print(newProd)
-            data.addProduct(newProd)
-        text.close()        
-        return data
-    except:
-        print("The format used, is not correct.")
+    text=open(file,"r")
+    a=0
+    for line in text:
+        a+=1
+        linea=line.split()
+        newProd=Product(linea)
+        print(newProd)
+        data.addProduct(newProd)
+    text.close()        
+    return data
+    # try:
+    #     text=open(file,"r")
+    #     a=0
+    #     for line in text:
+    #         a+=1
+    #         linea=line.split()
+    #         newProd=Product(linea)
+    #         print(newProd)
+    #         data.addProduct(newProd)
+    #     text.close()        
+    #     return data
+    # except:
+    #     print("The format used, is not correct.")
     # print(data)    
 
     return 0
@@ -87,12 +97,13 @@ def viewCart(cart,store,member):
         print(i)
     # print(details)
     return False
+
+
 def main():
     store=Inventory()
 
-    store=storeInventory()
-    # print(store,1)
-    # store.upDate("Milk",2)
+    # store=storeInventory("inventory.txt")
+    store=storeInventory("inventory1.txt")
     cart=Cart()
     member=False
     loggin=False

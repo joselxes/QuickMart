@@ -5,10 +5,15 @@ import sys
 
 class Product:
     def __init__(self,productDetails):
+        """product details """
+        # print(productDetails)
+
         self.prodName=productDetails[0][0:-1]
         self.quantity=int(productDetails[1][0:-1])
-        self.priceNoMember=float(productDetails[2][1:-1])
-        self.priceMember=float(productDetails[3][1:-1])
+        price1=float(productDetails[2][1:-1])
+        price2=float(productDetails[3][1:-1])
+        self.priceNoMember=price1
+        self.priceMember=price2
 
         if productDetails[4]=="Tax-Exempt":
             self.taxStatus=0
@@ -20,8 +25,8 @@ class Product:
         while len(nextItem)<11:
             nextItem+=" "
         if self.taxStatus:
-            return f'{nextItem} \t{self.quantity}, \t${self.priceMember:.2}, \t${round(self.priceNoMember,2)},\t Taxable'       
-        return f'{nextItem} \t{self.quantity}, \t${self.priceMember:.2}, \t${round(self.priceNoMember,2)},\t Tax-Exempt'
+            return f'{nextItem} \t{self.quantity}, \t${self.priceMember}, \t${round(self.priceNoMember,2)},\t Taxable'       
+        return f'{nextItem} \t{self.quantity}, \t${self.priceMember}, \t${round(self.priceNoMember,2)},\t Tax-Exempt'
 
 
 class Inventory:
@@ -35,6 +40,7 @@ class Inventory:
             string=string+self.inventory[key].__str__()+"\n"
         return string  
     def listProducts(self):
+        """ keys of the dictionery attribute to a list"""
         string=[]
         count=1
         for key in self.inventory: 
@@ -48,6 +54,7 @@ class Inventory:
         self.transactions+=1
         
     def upDate(self,Name,quantity):
+        """ Updates the inventory"""
         try:
             if self.inventory[Name].quantity<quantity:
                 self.inventory[Name].quantity=0
@@ -77,26 +84,31 @@ class Cart():
             count+=1
         return string  
     def listItems(self):  
+        """return a list of the elements inside the cart """
         string=[]
         for key in self.items: 
             string.append(key)
         return string  
     def addItem(self,product,quantity):
+        """Adds a product to the cart """
         if product in self.items:
             self.items[product]+=quantity
         else:
             self.items[product]=quantity
 
     def removeItem(self,product,quantity):
+        """ removes a product o reduce the elements of a specific product"""
         self.items[product]-=quantity
         if self.items[product]<=0:
             self.items.pop(product)
 
     def empty(self):
+        """Let us know if the cart is empty """
         if len(self.items)>=1:
             return False
         return True
     def checkOut(self,store,member,cash,onlyView):
+        """calculates the values needed to checkout"""
         priceNoMember=0
         priceMember=0
         totalItems=0
@@ -114,8 +126,8 @@ class Cart():
             for i in self.items:
                 nextItem=i
                 totalItems+=self.items[i]
-                tempMemberValue=store.inventory[i].priceMember*self.items[i]
-                tempNoMemberValue=store.inventory[i].priceNoMember*self.items[i]
+                tempMemberValue=round(store.inventory[i].priceMember*self.items[i],2)
+                tempNoMemberValue=round(store.inventory[i].priceNoMember*self.items[i],2)
                 priceMember+= tempMemberValue  
                 priceNoMember+= tempNoMemberValue
                 self.tax+=round((store.inventory[i].taxStatus*0.065)*(tempMemberValue),2)
@@ -130,8 +142,8 @@ class Cart():
             for i in self.items:
                 nextItem=i
                 totalItems+=self.items[i]
-                tempNoMemberValue=store.inventory[i].priceNoMember*self.items[i]
-                priceNoMember+= tempNoMemberValue
+                tempNoMemberValue=round(store.inventory[i].priceNoMember*self.items[i],2)
+                priceNoMember+= round(tempNoMemberValue,2)
                 self.tax+=round((store.inventory[i].taxStatus*0.065)*(tempNoMemberValue),2)
                 nextString=i+str(self.items[i])+"$"+str(store.inventory[i].priceNoMember)+str(tempNoMemberValue)
                 while len(nextItem)<12:

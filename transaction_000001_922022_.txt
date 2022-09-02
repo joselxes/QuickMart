@@ -1,0 +1,16 @@
+September 2,2022
+
+TRANSACTION:000001
+ITEM		QUANTITY		UNIT PRICE	TOTAL
+
+Gelatins    		2		$37.16		70.78
+
+************************************************
+TOTAL NUMBER OF ITEMS SOLD:2
+SUB-TOTAL: $74.32
+TAX(6.5%): $0.0
+TOTAL:$74.32
+CASH:$20.0
+CHANGE:$-54.32
+************************************************
+YOU SAVED:$-3.54!
